@@ -23,6 +23,12 @@ var redisPool = &redis.Pool{
 // Context эта структура требуется для пакета gocraft/work
 type Context struct{}
 
+// Log Middleware - логирование начала выполнения задачи
+func (c *Context) Log(job *work.Job, next work.NextMiddlewareFunc) error {
+	fmt.Println("Старт новой задачи:", job.Name, " ИД:", job.ID)
+	return next()
+}
+
 func main() {
 	// создаем пул воркеров, который может исполнять несколько задач одновременно
 	pool := work.NewWorkerPool(
@@ -32,12 +38,12 @@ func main() {
 		redisPool,  // пул задач redis
 	)
 
+	// Добавим middleware в пул воркеров. В данном случае это лог начала задачи
+	pool.Middleware((*Context).Log)
+
 	// создаем маппинг имен задач к соответствующим им функциям выполнения
 	// вариант БЕЗ ОПЦИЙ
-	//pool.Job(
-	//	"email",   // имя задачи
-	//	SendEmail, // выполняемая функция
-	//)
+	//pool.Job("email",  SendEmail)
 
 	// Вариант, если нужно установить приоритет задачи, а также настроить перезапуск в случае сбоя - указать опции work.JobOptions:
 	pool.JobWithOptions(
