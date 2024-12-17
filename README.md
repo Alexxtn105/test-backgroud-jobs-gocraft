@@ -5,6 +5,7 @@
 - контроль использования ресурсов путем изменения количества выполняемых фоновых задач;
 - простота управления задачами.
 
+## Установка
 Установка фреймворка:
 ```bash
 go get github.com/gocraft/work
@@ -18,5 +19,16 @@ go get github.com/gocraft/work/cmd/workwebui
 go install github.com/gocraft/work/cmd/workwebui
 ```
 
+
+## Проверка работоспособности
+Запуск пула воркеров
+```bash
+go run worker.go
+```
+
+Запуск фоновых задач
+```bash
+go run enqueuer/enqueuer.go
+```
 
 
