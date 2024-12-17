@@ -54,7 +54,7 @@ func SendEmail(job *work.Job) error {
 		return err
 	}
 
-	fmt.Println("Sneding mail to ", addr, "with subject", subject)
+	fmt.Println("Sending mail to ", addr, "with subject", subject)
 	time.Sleep(2 * time.Second)
 	return nil
 }
