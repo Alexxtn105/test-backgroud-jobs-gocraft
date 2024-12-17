@@ -22,7 +22,7 @@ var enqueuer = work.NewEnqueuer("demo_app", redisPool)
 
 func main() {
 	_, err := enqueuer.Enqueue(
-		"email",                                                // имя задачи
+		"email", // имя задачи
 		work.Q{"email": "test@mail.ru", "subject": "Testing!"}, //аргументы задачи
 	)
 	fmt.Println("Задача помещена в очередь. Проверьте вывод пула воркеров")
