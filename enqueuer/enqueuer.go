@@ -24,9 +24,9 @@ func main() {
 	_, err := enqueuer.Enqueue(
 		"email", // имя задачи
 		//work.Q{"email": "test@mail.ru", "subject": "Testing!"}, //аргументы задачи
-		work.Q{"userID": 1, "subject": "Testing!"}, //аргументы задачи - заменил адрес на ИД пользователя - для использования в контексте
+		work.Q{"userID": 10, "subject": "Testing!"}, //аргументы задачи - заменил адрес на ИД пользователя - для использования в контексте
 	)
-	fmt.Println("Задача помещена в очередь. Проверьте вывод пула воркеров")
+	fmt.Println("Задача помещена в очередь. Проверьте вывод пула воркеров (worker.go)")
 	if err != nil {
 		log.Fatal(err)
 	}
