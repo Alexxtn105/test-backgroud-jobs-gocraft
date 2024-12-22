@@ -35,6 +35,8 @@ go run enqueuer/enqueuer.go
 ```bash
 workwebui -redis="redis://localhost:6379" -ns="demo_app" -listen=":5040"
 ```
+Просмотр осуществляется в браузере по адресу http://localhost:5040.
+
 Значения параметров команды:
 ```bash
 -redis="redis://localhost:6379"     # адрес redis
