@@ -31,4 +31,13 @@ go run worker.go
 go run enqueuer/enqueuer.go
 ```
 
-
+Запуск визуального интерфейса для просмотра текущего состояния задач:
+```bash
+workwebui -redis="redis://localhost:6379" -ns="demo_app" -listen=":5040"
+```
+Значения параметров команды:
+```bash
+-redis="redis://localhost:6379"     # адрес redis
+-ns="demo_app"                      # пространство имен
+-listen=":5040"                     # адрес сервера UI 
+```

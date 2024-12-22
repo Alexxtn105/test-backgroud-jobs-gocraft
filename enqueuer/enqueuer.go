@@ -22,7 +22,7 @@ var enqueuer = work.NewEnqueuer("demo_app", redisPool)
 
 func main() {
 	_, err := enqueuer.Enqueue(
-		"email",                                     // имя задачи
+		"email", // имя задачи
 		work.Q{"userID": 10, "subject": "Testing!"}, //аргументы задачи - заменил адрес на ИД пользователя - для использования в контексте
 		//work.Q{"email": "test@mail.ru", "subject": "Testing!"}, //аргументы задачи
 	)
@@ -32,7 +32,7 @@ func main() {
 	}
 
 	_, err = enqueuer.Enqueue(
-		"report",                                     // имя задачи
+		"report", // имя задачи
 		work.Q{"userID": 5, "subject": "Reporting!"}, //аргументы задачи - заменил адрес на ИД пользователя - для использования в контексте
 		//work.Q{"email": "test@mail.ru", "subject": "Testing!"}, //аргументы задачи
 	)
