@@ -125,14 +125,20 @@ func (c *Context) SendEmail(job *work.Job) error {
 func (c *Context) Report(job *work.Job) error {
 	// Готовим отчет
 	fmt.Println("Подготовка отчета...")
-	time.Sleep(10 * time.Second)
+
+	for i := range 360 {
+		time.Sleep(10 * time.Second)
+
+		// для длительных операций отправляем сообщение о том, что задача активна
+		job.Checkin(fmt.Sprintf("i = %d", i))
+	}
 	// Отправляем отчет по почте. Если это длительная операция, нужно задание по отправке почты также поставить в очередь выполнения
 	_, err := enqueuer.Enqueue(
 		"email", // имя задачи
 		work.Q{"userID": c.currentUser.ID, "subject": "Отчет готов!"}, //аргументы задачи - заменил адрес на ИД пользователя - для использования в контексте
 		//work.Q{"email": "test@mail.ru", "subject": "Testing!"}, //аргументы задачи
 	)
-	//fmt.Println("ОТЧЕТ - Задача помещена в очередь. Проверьте вывод пула воркеров (worker.go)")
+	fmt.Println("ОТЧЕТ - Задача помещена в очередь. Проверьте вывод пула воркеров (worker.go)")
 	if err != nil {
 		return err
 	}
