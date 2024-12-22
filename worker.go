@@ -44,6 +44,9 @@ func (c *Context) FindCurrentUser(job *work.Job, next work.NextMiddlewareFunc) e
 			Email: "test" + strconv.Itoa(int(userID)) + "@mail.ru",
 			Name:  "User" + strconv.Itoa(int(userID)),
 		}
+		if err := job.ArgError(); err != nil {
+			return err
+		}
 	}
 	return next()
 }
@@ -53,6 +56,9 @@ func (c *Context) Log(job *work.Job, next work.NextMiddlewareFunc) error {
 	fmt.Println("Старт новой задачи:", job.Name, " ИД:", job.ID)
 	return next()
 }
+
+// enqueuer постановщик задач в очередь (пространство имен - demo_app)
+var enqueuer = work.NewEnqueuer("demo_app", redisPool)
 
 func main() {
 	// создаем пул воркеров, который может исполнять несколько задач одновременно
@@ -80,6 +86,14 @@ func main() {
 		},
 		(*Context).SendEmail, // выполняемая функция
 	)
+	pool.JobWithOptions(
+		"report", // имя задачи
+		work.JobOptions{
+			Priority: 10, // приоритет
+			MaxFails: 1,  // максимальное количество повторных выполнений задачи в случае сбоя
+		},
+		(*Context).Report, // выполняемая функция
+	)
 
 	// стартуем пул задач
 	pool.Start()
@@ -103,7 +117,24 @@ func (c *Context) SendEmail(job *work.Job) error {
 		return err
 	}
 
-	fmt.Println("Sending mail to", addr, "with subject", subject)
+	fmt.Println("Отправка почты на", addr, "с темой", subject)
 	time.Sleep(2 * time.Second)
+	return nil
+}
+
+func (c *Context) Report(job *work.Job) error {
+	// Готовим отчет
+	fmt.Println("Подготовка отчета...")
+	time.Sleep(10 * time.Second)
+	// Отправляем отчет по почте. Если это длительная операция, нужно задание по отправке почты также поставить в очередь выполнения
+	_, err := enqueuer.Enqueue(
+		"email", // имя задачи
+		work.Q{"userID": c.currentUser.ID, "subject": "Отчет готов!"}, //аргументы задачи - заменил адрес на ИД пользователя - для использования в контексте
+		//work.Q{"email": "test@mail.ru", "subject": "Testing!"}, //аргументы задачи
+	)
+	//fmt.Println("ОТЧЕТ - Задача помещена в очередь. Проверьте вывод пула воркеров (worker.go)")
+	if err != nil {
+		return err
+	}
 	return nil
 }
